@@ -35,6 +35,11 @@ OR_CASES = [([0.0, 0.0], 0.0),   # ([input_1, input_2], expected_value)
             ([0.0, 1.0], 1.0),
             ([1.0, 1.0], 1.0),]
 
+AND_CASES = [([0.0, 0.0], 0.0),   # ([input_1, input_2], expected_value)
+             ([1.0, 0.0], 0.0),
+             ([0.0, 1.0], 0.0),
+             ([1.0, 1.0], 1.0),]
+
 perceptron = Perceptron(**initial_weights(lambda: random.uniform(0.0, 0.5)))
 
 iteration = 0
@@ -42,7 +47,7 @@ while True:
     iteration += 1
     print "* Iteration {}".format(iteration)
     weights_changed = False
-    for inputs, expected in OR_CASES:
+    for inputs, expected in OR_CASES: # replace by AND_CASES to find weights for AND
         input_1, input_2 = inputs
         actual = perceptron.activate(input_1, input_2)
         print "weights = {} / inputs = {} / activation = {} ({}) / expected = {}".format(perceptron.weights, inputs, actual, convert(actual), expected)
