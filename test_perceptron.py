@@ -23,5 +23,32 @@ class TestPerceptron(unittest.TestCase):
         self.assertEqual({'bias': 0.1, 'weight_1': 0.1, 'weight_2': 0.1},
                          initial_weights(lambda: 0.1))
 
+    def test_weights_stagnate_when_learning_rate_is_zero(self):
+        perceptron = Perceptron(bias=0.5, weight_1=1.0, weight_2=1.0)
+        perceptron.update_weights(learning_rate=0.0, input_1=0.4, input_2=0.6, actual_activation=1.0, expected_activation=0.0)
+        self.assertEqual(0.5, perceptron.bias)
+        self.assertEqual(1.0, perceptron.weight_1)
+        self.assertEqual(1.0, perceptron.weight_2)
+
+    def test_bias_is_updated_of_the_learning_rate_if_expected_is_different_than_actual(self):
+        perceptron = Perceptron(bias=0.5, weight_1=1.0, weight_2=1.0)
+        perceptron.update_weights(learning_rate=0.2, input_1=0.0, input_2=0.0, actual_activation=0.0, expected_activation=1.0)
+        self.assertEqual(0.7, perceptron.bias)
+
+    def test_inputs_are_updated_of_the_learning_rate_times_the_weight_if_expected_is_different_than_actual(self):
+        perceptron = Perceptron(bias=0.5, weight_1=1.0, weight_2=1.0)
+        perceptron.update_weights(learning_rate=0.3, input_1=1.0, input_2=1.0, actual_activation=1.0, expected_activation=0.0)
+        self.assertEqual(0.7, perceptron.weight_1)
+        self.assertEqual(0.7, perceptron.weight_2)
+
+    def test_bias_and_inputs_are_not_changed_if_expected_is_equal_to_actual(self):
+        perceptron = Perceptron(bias=0.5, weight_1=1.0, weight_2=0.8)
+        perceptron.update_weights(learning_rate=0.3, input_1=1.0, input_2=1.0, actual_activation=1.0, expected_activation=1.0)
+        self.assertEqual(0.5, perceptron.bias)
+        self.assertEqual(1.0, perceptron.weight_1)
+        self.assertEqual(0.8, perceptron.weight_2)
+
+
+
 if __name__ == '__main__':
     unittest.main()
