@@ -1,6 +1,6 @@
 import unittest
 
-from perceptron import Perceptron, initial_weights
+from perceptron import Perceptron, initial_weights, convert
 
 
 class TestPerceptron(unittest.TestCase):
@@ -47,6 +47,17 @@ class TestPerceptron(unittest.TestCase):
         self.assertEqual(0.5, perceptron.bias)
         self.assertEqual(1.0, perceptron.weight_1)
         self.assertEqual(0.8, perceptron.weight_2)
+
+    def test_convert_returns_zero_if_activation_is_less_than_0_5(self):
+        self.assertEqual(0.0, convert(0.0))
+        self.assertEqual(0.0, convert(0.3))
+        self.assertEqual(0.0, convert(0.49))
+
+    def test_convert_returns_one_if_activation_is_greater_or_equal_than_0_5(self):
+        self.assertEqual(1.0, convert(0.5))
+        self.assertEqual(1.0, convert(0.8))
+        self.assertEqual(1.0, convert(1.0))
+        self.assertEqual(1.0, convert(1.3))
 
 
 

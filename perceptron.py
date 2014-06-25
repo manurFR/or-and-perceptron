@@ -16,10 +16,44 @@ class Perceptron(object):
         self.weight_1 += learning_rate * evaluation * input_1
         self.weight_2 += learning_rate * evaluation * input_2
 
+    @property
+    def weights(self):
+        return [self.bias, self.weight_1, self.weight_2]
+
 
 def initial_weights(random_func):
     return dict(zip(['bias', 'weight_1', 'weight_2'], [random_func() for _ in range(3)]))
 
+
+def convert(activation):
+    return 1.0 if activation >= 0.5 else 0.0
+
 # main
+LEARNING_RATE = 0.1
+OR_CASES = [([0.0, 0.0], 0.0),   # ([input_1, input_2], expected_value)
+            ([1.0, 0.0], 1.0),
+            ([0.0, 1.0], 1.0),
+            ([1.0, 1.0], 1.0),]
 
 perceptron = Perceptron(**initial_weights(lambda: random.uniform(0.0, 0.5)))
+
+iteration = 0
+while True:
+    iteration += 1
+    print "* Iteration {}".format(iteration)
+    weights_changed = False
+    for inputs, expected in OR_CASES:
+        input_1, input_2 = inputs
+        actual = perceptron.activate(input_1, input_2)
+        print "weights = {} / inputs = {} / activation = {} ({}) / expected = {}".format(perceptron.weights, inputs, actual, convert(actual), expected)
+        perceptron.update_weights(LEARNING_RATE, input_1, input_2, convert(actual), expected)
+        if convert(actual) != expected:
+            weights_changed = True
+            print " -> weights updated to {}".format(perceptron.weights)
+
+
+    if not weights_changed:
+        break
+
+print
+print "Converged ({} iterations)! Weights: {}".format(iteration, perceptron.weights)
